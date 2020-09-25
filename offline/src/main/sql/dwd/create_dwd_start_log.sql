@@ -25,6 +25,5 @@ CREATE EXTERNAL TABLE gmall.dwd_start_log(
 `extend1` string
 )
 PARTITIONED BY (dt string)
-stored as orc
-location '/warehouse/gmall/dwd/dwd_start_log/'
-TBLPROPERTIES ("orc.compress"="SNAPPY");
+stored as parquet
+location '/warehouse/gmall/dwd/dwd_start_log/'l;

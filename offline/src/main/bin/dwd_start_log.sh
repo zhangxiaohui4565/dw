@@ -11,6 +11,7 @@ else
 fi
 
 sql="
+SET mapred.reduce.task=1;
 insert overwrite table "$APP".dwd_start_log
 PARTITION (dt='$do_date')
 select
