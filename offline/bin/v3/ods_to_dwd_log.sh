@@ -1,6 +1,6 @@
 #!/bin/bash
 
-hive=/usr/bin/hive /etc/hive
+hive=/usr/bin/hive
 APP=gmall
 # 如果是输入的日期按照取输入日期；如果没输入日期取当前时间的前一天
 if [ -n "$1" ] ;then
@@ -132,5 +132,5 @@ from ${APP}.ods_log
 where dt='$dt'
 and get_json_object(line,'$.err') is not null;
 "
-$hive -e "$sql"
+${hive} -e "$sql"
 #/usr/bin/beeline -u "jdbc:hive2://node01:10000/" -n hive -p hive -e "$sql"
