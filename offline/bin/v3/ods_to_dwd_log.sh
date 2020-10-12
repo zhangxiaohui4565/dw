@@ -9,8 +9,6 @@ else
 fi
 
 sql="
-SET mapreduce.job.queuename=hive;
-SET hive.input.format=org.apache.hadoop.hive.ql.io.HiveInputFormat;
 insert overwrite table ${APP}.dwd_start_log partition(dt='$dt')
 select 
     get_json_object(line,'$.common.ar'),
