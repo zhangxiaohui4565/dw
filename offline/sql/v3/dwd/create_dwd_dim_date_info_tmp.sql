@@ -13,3 +13,5 @@ CREATE EXTERNAL TABLE `gmall.dwd_dim_date_info_tmp`
 ) COMMENT '时间临时表'
     row format delimited fields terminated by '\t'
     location '/warehouse/gmall/dwd/dwd_dim_date_info_tmp/';
+-- 加载外部文件数据到临时表中  然后再查询临时表 使其存储格式为列式存储
+--- load data local inpath '/opt/git/dw/offline/sql/v3/dwd/date_info.txt' into table gmall.dwd_dim_date_info_tmp;
