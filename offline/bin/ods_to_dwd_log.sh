@@ -5,13 +5,13 @@ APP=gmall
 # 如果是输入的日期按照取输入日期；如果没输入日期取当前时间的前一天
 if [ -n "$1" ] ;then
     dt=$1
-else 
+else
     dt=`date -d "-1 day" +%F`
 fi
 
 sql="
 insert overwrite table ${APP}.dwd_start_log partition(dt='$dt')
-select 
+select
     get_json_object(line,'$.common.ar'),
     get_json_object(line,'$.common.ba'),
     get_json_object(line,'$.common.ch'),
@@ -128,7 +128,7 @@ select
     get_json_object(line,'$.ts'),
     get_json_object(line,'$.err.error_code'),
     get_json_object(line,'$.err.msg')
-from ${APP}.ods_log 
+from ${APP}.ods_log
 where dt='$dt'
 and get_json_object(line,'$.err') is not null;
 "
