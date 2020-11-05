@@ -21,12 +21,12 @@ public class LoggerController {
     public String applog(@RequestBody JSONObject jsonObject){
         String logJson = jsonObject.toJSONString();
         log.info(logJson);
-//        if(jsonObject.getString("start")!=null){
-//            kafkaTemplate.send("GMALL_START",logJson);
-//        }else{
-//            kafkaTemplate.send("GMALL_EVENT",logJson);
-//
-//        }
+        if(jsonObject.getString("start")!=null){
+            kafkaTemplate.send("GMALL_START",logJson);
+        }else{
+            kafkaTemplate.send("GMALL_EVENT",logJson);
+
+        }
  
         return "success";
     }
