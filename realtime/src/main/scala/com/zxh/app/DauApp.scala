@@ -6,11 +6,13 @@ import java.util.Date
 
 import com.alibaba.fastjson.{JSON, JSONObject}
 import com.zxh.bean.DauInfo
-import com.zxh.utils.{RedisUtil, XhESUtils, XhKafkaUtil}
+import com.zxh.utils.{OffsetManagerUtils, RedisUtil, XhESUtils, XhKafkaUtil}
 import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.apache.kafka.common.TopicPartition
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.dstream.{DStream, InputDStream}
+import org.apache.spark.streaming.kafka010.{HasOffsetRanges, OffsetRange}
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import redis.clients.jedis.Jedis
 
@@ -24,15 +26,32 @@ import scala.collection.mutable.ListBuffer
  */
 object DauApp {
   def main(args: Array[String]): Unit = {
-//    Logger.getLogger("org").setLevel(Level.WARN)
+    Logger.getLogger("org").setLevel(Level.WARN)
     val dauAppConf = new SparkConf().setMaster("local[4]").setAppName("DauApp")
     val ssc = new StreamingContext(dauAppConf, Seconds(5))
-    val groupId = "GMALL_DAU_CONSUMER24"
+    val groupId = "GMALL_DAU_CONSUMER12"
     val topic = "GMALL_START"
-    val startupInputDstream: InputDStream[ConsumerRecord[String, String]] = XhKafkaUtil.getKafkaStream(topic, ssc, groupId)
+    var startupInputDstream: InputDStream[ConsumerRecord[String, String]] = null
+    val kafkaOffsetMap: Map[TopicPartition, Long] = OffsetManagerUtils.getConsumeOffset(groupId,topic)
+    if (kafkaOffsetMap != null && kafkaOffsetMap.size > 0) {
+      //Redis中有偏移量  根据Redis中保存的偏移量读取
+      startupInputDstream = XhKafkaUtil.getKafkaStream(topic, ssc, kafkaOffsetMap, groupId)
+    } else {
+      // Redis中没有保存偏移量  Kafka默认从最新读取
+      startupInputDstream = XhKafkaUtil.getKafkaStream(topic, ssc, groupId)
+    }
+    //获取本批次最后一条数据的偏移量
+    var offsetRanges: Array[OffsetRange] = Array.empty[OffsetRange]
+    val offsetDStream: DStream[ConsumerRecord[String, String]] = startupInputDstream.transform {
+      rdd => {
+        offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+        println(offsetRanges(0).untilOffset + "*****")
+        rdd
+      }
+    }
 
     // 进行日志格式添加
-    val jsonObjDStream: DStream[JSONObject] = startupInputDstream.map { record =>
+    val jsonObjDStream: DStream[JSONObject] = offsetDStream.map { record =>
       //获取启动日志
       val jsonStr: String = record.value()
       //将启动日志转换为json对象
@@ -106,6 +125,8 @@ object DauApp {
             XhESUtils.batchSaveToES("gmall2020_dau_info_", dauList)
           }
         }
+        //在保存最后提交偏移量
+        OffsetManagerUtils.saveOffset(topic, groupId, offsetRanges)
       }
     }
     ssc.start()
