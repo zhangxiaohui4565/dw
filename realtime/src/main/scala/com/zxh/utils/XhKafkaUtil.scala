@@ -24,7 +24,7 @@ object XhKafkaUtil {
     //可以使用这个配置，latest自动重置偏移量为最新的偏移量
     // 选项为latest（最新）、earliest（最早）
     //todo 为了能够接受测试数据，改成获取最早数据
-    "auto.offset.reset" -> "",
+    "auto.offset.reset" -> "earliest",
     //如果是true，则这个消费者的偏移量会在后台自动提交,但是kafka宕机容易丢失数据
     //如果是false，会需要手动维护kafka偏移量
     "enable.auto.commit" -> (false: java.lang.Boolean)

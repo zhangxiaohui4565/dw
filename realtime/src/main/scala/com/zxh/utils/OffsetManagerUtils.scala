@@ -7,15 +7,15 @@ import org.apache.kafka.clients.consumer.{ConsumerConfig, KafkaConsumer, NoOffse
 import org.apache.kafka.common.TopicPartition
 
 import scala.collection.mutable
-import scala.collection.mutable.Map
+
 
 /**
-  * @author zhangxh
-  * @date 2020/11/10 8:56
-  * @version 1.0
-  */
+ * @author zhangxh
+ * @date 2020/11/10 8:56
+ * @version 1.0
+ */
 object OffsetManagerUtils {
-  
+
   private def getEarliestOffsets(kafkaParams: Map[String, Object], topics: List[String]) = {
     val newKafkaParams = mutable.Map[String, Object]()
     newKafkaParams ++= kafkaParams
@@ -45,9 +45,8 @@ object OffsetManagerUtils {
     consumer.seekToBeginning(topicp)
     // key 为new TopicPartition(topic.partition)
     //position(TopicPartition partition)
-    var topicOffsetMap = Map[TopicPartition, Long]()
-    for (tp <- topicp) {
-      val tp: TopicPartition = tp
+    val topicOffsetMap = mutable.Map[TopicPartition, Long]()
+    for (tp <- topicp.asScala) {
       // Get the offset of the <i>next record</i>
       val pOffset: Long = consumer.position(tp)
       topicOffsetMap(tp) = pOffset
@@ -55,5 +54,9 @@ object OffsetManagerUtils {
     consumer.unsubscribe()
     consumer.close()
     topicOffsetMap
+  }
+
+  def main(args: Array[String]): Unit = {
+    println("11")
   }
 }
