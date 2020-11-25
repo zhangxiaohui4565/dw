@@ -12,6 +12,7 @@
         <module>realtime</module>
         <module>flume</module>
         <module>offline</module>
+        <module>algorithmbasic</module>
     </modules>
 
     <repositories>
