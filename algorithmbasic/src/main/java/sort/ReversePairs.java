@@ -1,5 +1,8 @@
 package sort;
 
+/**
+ * 依据归并排序计算倒序对
+ */
 class ReversePairs {
     public static int reversePairs(int[] nums) {
         int len = nums.length;
