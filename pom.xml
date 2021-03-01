@@ -13,6 +13,7 @@
         <module>flume</module>
         <module>offline</module>
         <module>algorithmbasic</module>
+        <module>kudu_demo</module>
     </modules>
 
     <repositories>
