@@ -44,6 +44,7 @@ public class MergeSort {
             arr[l + j] = help[j];
         }
     }
+
     public static void mergeSort2(int[] arr) {
         /**
          * 从长度为1 开始 ，逐个进行左组右组归并。
@@ -74,12 +75,48 @@ public class MergeSort {
             mergeSize <<= 1;
         }
     }
+
     public static void main(String[] args) {
-        int[] test = {1, 2, 2, 7, 5, 4, 3, 4,32,32,4,4,2,2,9};
+        int[] test = {1, 2, 2, 7, 5, 4, 3, 4, 32, 32, 4, 4, 2, 2, 9};
         System.out.println(test.toString());
 //        mergeSort1(test);
         mergeSort2(test);
         System.out.println(test.toString());
+    }
+
+
+    private static void mergeSort(int[] arr, int l, int m, int r) {
+        int[] helps = new int[r - l + 1];
+        int leftP = l;
+        int rightP = m + 1;
+        int helpP = 0;
+        while (leftP <= m && rightP <= r) {
+            if (arr[leftP] <= arr[rightP]) {
+                helps[helpP] = arr[leftP];
+                leftP++;
+                helpP++;
+            } else {
+                helps[helpP] = arr[rightP];
+                rightP++;
+                helpP++;
+            }
+        }
+        while (leftP <= m) {
+
+            helps[helpP] = arr[leftP];
+            leftP++;
+            helpP++;
+
+        }
+        while (rightP <= r) {
+            helps[helpP] = arr[rightP];
+            rightP++;
+            helpP++;
+
+        }
+        for (int i=0;i<helps.length;i++){
+            arr[l+i] = helps[i];
+        }
     }
 
 }

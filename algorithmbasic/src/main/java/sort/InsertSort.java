@@ -7,7 +7,7 @@ package sort;
  */
 public class InsertSort {
     public static void insertSort(int arr[]) {
-        for (int i = 0; i < arr.length; i++) {
+        for (int i = 1; i < arr.length; i++) {
             for (int j = i; j > 0; j--) {
                 if (arr[j-1] > arr[j]){
                     swap(arr,j-1,j);
@@ -26,6 +26,7 @@ public class InsertSort {
         int[] test = {1, 2, 2, 7, 5, 4, 3, 4,32,32,4,4,2,2,9};
         System.out.println(test.toString());
 //        mergeSort1(test);
+//        insertSort(test);
         insertSort(test);
         System.out.println(test.toString());
     }
