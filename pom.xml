@@ -14,6 +14,7 @@
         <module>offline</module>
         <module>algorithmbasic</module>
         <module>kudu_demo</module>
+        <module>flink-demo</module>
     </modules>
 
     <repositories>
